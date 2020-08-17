@@ -75,7 +75,7 @@ async function run() {
           pythonName = "python";
         }
         
-          // Install qt first
+        // Install qt first
         {
             //set args
             let args = ["-O", `${dir}`, `${version}`, `${host}`, `${target}`];
@@ -102,27 +102,26 @@ async function run() {
             await exec.exec(`${pythonName} -m aqt install`, args);
         }
           
-          // Install all space-separated tools
-          if(tools) {
-              tools.split(";").forEach(function(currentTool) {
-                //set args
-                let args = ["-O", `${dir}`, `${host}`];
-                if (mirror) {
-                  args.push("-b");
-                  args.push(mirror);
-                }
+        // Install all space-separated tools
+        if(tools) {
+          tools.split(";").forEach(async function(currentTool) {
+            //set args
+            let args = ["-O", `${dir}`, `${host}`];
+            if (mirror) {
+              args.push("-b");
+              args.push(mirror);
+            }
 
-                const items = currentTool.split(" ");
-                  
-                args.push(items[0]);
-                args.push(arch);
-                args.push(items[1]);
+            const items = currentTool.split(" ");
+              
+            args.push(items[0]);
+            args.push(arch);
+            args.push(items[1]);
 
-                //run aqtinstall with args
-                await exec.exec(`${pythonName} -m aqt tool`, args);
-              });
-               
-          }
+            //run aqtinstall with args
+            await exec.exec(`${pythonName} -m aqt tool`, args);
+          });
+        }
       }
 
       //set environment variables
