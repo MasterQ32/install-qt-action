@@ -111,9 +111,12 @@ async function run() {
                   args.push("-b");
                   args.push(mirror);
                 }
-                currentTool.split(" ").forEach(function(string) {
-                  args.push(string);
-                });
+
+                const items = currentTool.split(" ");
+                  
+                args.push(items[0]);
+                args.push(arch);
+                args.push(items[1]);
 
                 //run aqtinstall with args
                 await exec.exec(`${pythonName} -m aqt tool`, args);
