@@ -31,6 +31,8 @@ async function run() {
         const mirror = core.getInput("mirror");
         const extra = core.getInput("extra");
         const modules = core.getInput("modules");
+        const tools = core.getInput("tools");
+          
 
         //set host automatically if omitted
         if (!host) {
@@ -67,35 +69,57 @@ async function run() {
           }
         }
 
-        //set args
-        let args = ["-O", `${dir}`, `${version}`, `${host}`, `${target}`];
-        if (arch && ((host == "windows" || target == "android") || arch == "wasm_32")) {
-          args.push(`${arch}`);
-        }
-        if (mirror) {
-          args.push("-b");
-          args.push(mirror);
-        }
-        if (extra) {
-          extra.split(" ").forEach(function(string) {
-            args.push(string);
-          });
-        }
-        if (modules) {
-          args.push("-m");
-          modules.split(" ").forEach(function(currentModule) {
-            args.push(currentModule);
-          });
-        }
-
         //accomodate for differences in python 3 executable name
         let pythonName = "python3";
         if (process.platform == "win32") {
           pythonName = "python";
         }
+        
+          // Install qt first
+        {
+            //set args
+            let args = ["-O", `${dir}`, `${version}`, `${host}`, `${target}`];
+            if (arch && ((host == "windows" || target == "android") || arch == "wasm_32")) {
+              args.push(`${arch}`);
+            }
+            if (mirror) {
+              args.push("-b");
+              args.push(mirror);
+            }
+            if (extra) {
+              extra.split(" ").forEach(function(string) {
+                args.push(string);
+              });
+            }
+            if (modules) {
+              args.push("-m");
+              modules.split(" ").forEach(function(currentModule) {
+                args.push(currentModule);
+              });
+            }
 
-        //run aqtinstall with args
-        await exec.exec(`${pythonName} -m aqt install`, args);
+            //run aqtinstall with args
+            await exec.exec(`${pythonName} -m aqt install`, args);
+        }
+          
+          // Install all space-separated tools
+          if(tools) {
+              tools.split(";").forEach(function(currentTool) {
+                //set args
+                let args = ["-O", `${dir}`, `${host}`];
+                if (mirror) {
+                  args.push("-b");
+                  args.push(mirror);
+                }
+                currentTool.split(" ").forEach(function(string) {
+                  args.push(string);
+                });
+
+                //run aqtinstall with args
+                await exec.exec(`${pythonName} -m aqt tool`, args);
+              });
+               
+          }
       }
 
       //set environment variables
