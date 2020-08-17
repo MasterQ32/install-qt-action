@@ -35,6 +35,8 @@ inputs:
     default: '==0.9.1'
   extra:
     description: "Any extra arguments to append to the back"
+  tools:
+    description: "Semicolon-separated list of tools to install. Each entry is a 2-item entry composed of the tool name (tools_openssl_x64) and the tool version (qt.tools.openssl.win_x64)" 
 runs:
   using: 'node12'
   main: 'lib/main.js'
